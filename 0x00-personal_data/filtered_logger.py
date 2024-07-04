@@ -6,9 +6,10 @@ from typing import List
 import re
 import logging
 import os
+import mysql
 from mysql.connector.connection import MySQLConnection
 
-PII_FIELDS = ("ssn", "password", "ip", "last_login", "user_agent")
+PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
 
 def filter_datum(fields: List[str],
@@ -82,5 +83,6 @@ def get_db() -> MySQLConnection:
     password = os.getenv("PERSONAL_DATA_DB_PASSWORD", "")
     host = os.getenv("PERSONAL_DATA_DB_HOST", "localhost")
     database = os.getenv("PERSONAL_DATA_DB_NAME", "holberton")
-    return MySQLConnection(user=user,
-                           password=password, host=host, database=database)
+    return mysql.connector.connect(user=user,
+                                   password=password,
+                                   host=host, database=database)
