@@ -6,7 +6,7 @@ from typing import List
 import re
 import logging
 import os
-from mysql.connector.connection import MySQLConnection
+import mysql.connector
 
 PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
@@ -75,7 +75,7 @@ def get_logger() -> logging.Logger:
     return logger
 
 
-def get_db() -> MySQLConnection:
+def get_db() -> mysql.connector.connection.MySQLConnection:
     """
     return connector to database
     """
@@ -83,5 +83,28 @@ def get_db() -> MySQLConnection:
     password = os.getenv("PERSONAL_DATA_DB_PASSWORD", "")
     host = os.getenv("PERSONAL_DATA_DB_HOST", "localhost")
     database = os.getenv("PERSONAL_DATA_DB_NAME", "holberton")
-    return MySQLConnection(user=user,
-                           password=password, host=host, database=database)
+    return mysql.connector.connect(user=user,
+                                   password=password, host=host,
+                                   database=database)
+
+
+def main() -> None:
+    """read database and log filtered record to console"""
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM users;")
+
+    logger = get_logger()
+    for row in cur:
+        record = []
+        for desc, entry in zip(cur.description, row):
+            key_value = f"{desc[0]}={entry}"
+            record.append(key_value)
+        log = ";".join(record)
+        logger.info(log)
+    cur.close()
+    conn.close()
+
+
+if __name__ == "__main__":
+    main()
