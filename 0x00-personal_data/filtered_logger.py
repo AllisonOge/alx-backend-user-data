@@ -52,6 +52,7 @@ class RedactingFormatter(logging.Formatter):
         return filter_datum(self.fields, RedactingFormatter.REDACTION,
                             original_msg, RedactingFormatter.SEPARATOR)
 
+
 def get_logger() -> logging.Logger:
     """
     returns a logging.Logger object
@@ -62,6 +63,8 @@ def get_logger() -> logging.Logger:
 
     # create streamHandler
     stream_handler = logging.StreamHandler()
+    formatter = RedactingFormatter(PII_FIELDS)
+    stream_handler.setFormatter(formatter)
 
     # add handler to the logger
     logger.addHandler(stream_handler)
