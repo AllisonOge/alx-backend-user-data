@@ -5,7 +5,7 @@ Module to encrypt password
 import bcrypt
 
 
-def hash_password(password: str) -> str:
+def hash_password(password: str) -> bytes:
     """
     hash a password using bcrypt
     """
