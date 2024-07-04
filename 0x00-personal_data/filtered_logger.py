@@ -6,7 +6,6 @@ from typing import List
 import re
 import logging
 import os
-import mysql
 from mysql.connector.connection import MySQLConnection
 
 PII_FIELDS = ("name", "email", "phone", "ssn", "password")
@@ -26,7 +25,7 @@ def filter_datum(fields: List[str],
     Returns:
         (str) the obfuscated log message
     """
-    def replace_field(match):
+    def replace_field(match: re.Match):
         """replace match"""
         field = match.group(1)
         if field in fields:
@@ -51,6 +50,7 @@ class RedactingFormatter(logging.Formatter):
         self.fields = fields
 
     def format(self, record: logging.LogRecord) -> str:
+        """format filtered record"""
         original_msg = super(RedactingFormatter, self).format(record)
         return filter_datum(self.fields, RedactingFormatter.REDACTION,
                             original_msg, RedactingFormatter.SEPARATOR)
@@ -83,6 +83,5 @@ def get_db() -> MySQLConnection:
     password = os.getenv("PERSONAL_DATA_DB_PASSWORD", "")
     host = os.getenv("PERSONAL_DATA_DB_HOST", "localhost")
     database = os.getenv("PERSONAL_DATA_DB_NAME", "holberton")
-    return mysql.connector.connect(user=user,
-                                   password=password,
-                                   host=host, database=database)
+    return MySQLConnection(user=user,
+                           password=password, host=host, database=database)
