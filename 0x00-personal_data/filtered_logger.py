@@ -3,6 +3,7 @@
 Module that defines a function `filter_datum`
 """
 from typing import List
+import re
 
 
 def filter_datum(fields: List[str], redaction: str, message: str, separator: str):
@@ -18,11 +19,12 @@ def filter_datum(fields: List[str], redaction: str, message: str, separator: str
     Returns:
         (str) the obfuscated log message
     """
-    all_fields = {
-            k: v for k, v in list(map(lambda x: x.split("="), message.split(separator)[:-1]))
-            }
-    for field in fields:
-        if field not in all_fields:
-            return
-        all_fields[field] = redaction
-    return ";".join(f"{k}={v}" for k, v in all_fields.items()) + ";"
+    def replace_field(match):
+        """replace match"""
+        field = match.group(1)
+        if field in fields:
+            return f"{field}={redaction}{separator}"
+        return match.group(0)
+    pattern = re.compile(rf"([^=]+)=([^{separator}]*){separator}")
+    obfuscated_message = re.sub(pattern, replace_field, message)
+    return obfuscated_message
