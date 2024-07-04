@@ -5,8 +5,14 @@ Module that defines a function `filter_datum`
 from typing import List
 import re
 import logging
+import os
+from mysql.connector.connection import MySQLConnection
 
 PII_FIELDS = ("ssn", "password", "ip", "last_login", "user_agent")
+PERSONAL_DATA_DB_NAME = "holberton"
+PERSONAL_DATA_DB_USERNAME = "root"
+PERSONAL_DATA_DB_PASSWORD = ""
+PERSONAL_DATA_DB_HOST = "localhost"
 
 
 def filter_datum(fields: List[str],
@@ -70,3 +76,14 @@ def get_logger() -> logging.Logger:
     logger.addHandler(stream_handler)
 
     return logger
+
+
+def get_db() -> MySQLConnection:
+    """
+    return connector to database
+    """
+    user = os.getenv("PERSONAL_DATA_DB_USERNAME") or PERSONAL_DATA_DB_USERNAME
+    password = os.getenv("PERSONAL_DATA_DB_PASSWORD") or PERSONAL_DATA_DB_PASSWORD
+    host = os.getenv("PERSONAL_DATA_DB_HOST") or PERSONAL_DATA_DB_HOST
+    database = os.getenv("PERSONAL_DATA_DB_NAME") or PERSONAL_DATA_DB_NAME
+    return MySQLConnection(user=user, password=password, host=host, database=database)
