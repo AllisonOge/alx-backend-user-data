@@ -36,6 +36,7 @@ def forbidden(error) -> str:
 
 @app.before_request
 def before_request():
+    """handle all authorization before request"""
     if auth is None:
         return
     if not auth.require_auth(request.path, excluded_paths=[
