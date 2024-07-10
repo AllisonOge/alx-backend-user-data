@@ -34,3 +34,15 @@ class BasicAuth(Auth):
         except:  # noqa
             pass
         return
+
+    def extract_user_credentials(self,
+                                 decode_base64_authorization_header:
+                                 str) -> (str, str):
+        """return the user email and password from the Base64 decoded value"""
+        if decode_base64_authorization_header is None:
+            return None, None
+        if not isinstance(decode_base64_authorization_header, str):
+            return None, None
+        if ":" not in decode_base64_authorization_header:
+            return None, None
+        return decode_base64_authorization_header.split(":")
