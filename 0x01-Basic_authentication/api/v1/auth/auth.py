@@ -4,6 +4,7 @@ Module for Auth class
 """
 from flask import request
 from typing import List, TypeVar
+import fnmatch
 
 
 class Auth:
@@ -19,7 +20,7 @@ class Auth:
                     and len(excluded_paths) == 0):
             return True
         for excluded_path in excluded_paths:
-            if path in excluded_path:
+            if fnmatch.fnmatch(path, excluded_path):
                 return False
         return True
 
