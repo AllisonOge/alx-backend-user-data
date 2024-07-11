@@ -20,7 +20,7 @@ class Auth:
                     and len(excluded_paths) == 0):
             return True
         for excluded_path in excluded_paths:
-            if fnmatch.fnmatch(path, excluded_path):
+            if fnmatch.fnmatch(path.rstrip('/'), excluded_path.rstrip('/')):
                 return False
         return True
 
