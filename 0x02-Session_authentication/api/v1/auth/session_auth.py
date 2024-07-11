@@ -17,5 +17,5 @@ class SessionAuth(Auth):
         if not isinstance(user_id, str):
             return
         session_id = uuid.uuid4()
-        SessionAuth.user_id_by_session_id.update({f'{session_id}': user_id})
+        SessionAuth.user_id_by_session_id.update({session_id: user_id})
         return session_id
