@@ -15,7 +15,7 @@ def login():
     password = request.form.get("password")
 
     if not email:
-        return jsonify({'error': 'email is missing'}), 400
+        return jsonify({'error': 'email missing'}), 400
     if not password:
         return jsonify({'error': 'password missing'}), 400
     searches = User.search(dict(email=email))
