@@ -10,6 +10,7 @@ from models.user import User
 
 @app_views.route('/auth_session/login', methods=['POST'], strict_slashes=False)
 def login():
+    """login with session authentication"""
     email = request.form.get("email")
     password = request.form.get("password")
 
