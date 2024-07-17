@@ -63,4 +63,3 @@ class DB:
                 raise ValueError
 
         self._session.commit()
-
