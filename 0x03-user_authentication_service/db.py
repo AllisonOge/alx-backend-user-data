@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """DB module
 """
+from typing import Any
 from sqlalchemy import create_engine
 from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.ext.declarative import declarative_base
@@ -39,7 +40,7 @@ class DB:
         self._session.commit()
         return new_user
 
-    def find_user_by(self, **kwargs) -> User:
+    def find_user_by(self, **kwargs: Any) -> User:
         """find user by keyword arguments"""
         try:
             user = self._session.query(User).filter_by(**kwargs).one()
