@@ -2,8 +2,10 @@
 """DB module
 """
 from sqlalchemy import create_engine
+from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.session import Session
 
 from user import Base, User
@@ -32,10 +34,17 @@ class DB:
 
     def add_user(self, email: str, hashed_password: str) -> User:
         """save the user to the database"""
-        # 1. get a session
-        session = self._session
-        # 2. add the user to the database
         new_user = User(email=email, hashed_password=hashed_password)
-        session.add(new_user)
-        session.commit()
+        self._session.add(new_user)
+        self._session.commit()
         return new_user
+
+    def find_user_by(self, **kwargs) -> User:
+        """find user by keyword arguments"""
+        try:
+            user = self._session.query(User).filter_by(**kwargs).one()
+        except NoResultFound:
+            raise
+        except InvalidRequestError:
+            raise
+        return user
